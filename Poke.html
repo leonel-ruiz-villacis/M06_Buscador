@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        body {
+            background-color: rgb(192, 17, 17);
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        input,
+        button {
+            padding: 10px;
+            font-size: 1rem;
+        }
+        
+        #pokemonData img {
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
+    <div class="container">
+        <h1>Buscador de Pokemon</h1>
+        <input type="text" id="pokemonName" placeholder="Nombre del Pokémon">
+        <button onclick="getPokemonData()">Buscar</button>
+        <div id="pokemonData"></div>
+    </div>
+
+    <script>
+        function getPokemonData() {
+            var pokemonName = document.getElementById("pokemonName").value.toLowerCase();
+            var xhr = new XMLHttpRequest();
+
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    var pokemonData = JSON.parse(this.responseText);
+                    displayPokemonData(pokemonData);
+                }
+            });
+
+            xhr.open("GET", "https://pokeapi.co/api/v2/pokemon/" + pokemonName);
+            xhr.send(null);
+        }
+
+        function displayPokemonData(pokemonData) {
+            var output = `
+                <h2>${pokemonData.name.toUpperCase()}</h2>
+                <img src="${pokemonData.sprites.front_default}" alt="${pokemonData.name}">
+                <p>Tipus: ${pokemonData.types.map(typeInfo => typeInfo.type.name).join(", ")}</p>
+                <p>Alçada: ${pokemonData.height / 10} m</p>
+                <p>Pes: ${pokemonData.weight / 10} kg</p>
+            `;
+
+            document.getElementById("pokemonData").innerHTML = output;
+        }
+    </script>
+</body>
+</html>
